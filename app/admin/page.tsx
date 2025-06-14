@@ -1,7 +1,8 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import dynamic from 'next/dynamic'
+import type { PluggableList } from 'unified'
 import { supabase } from '@/lib/supabase'
 import { generateSlug } from '@/lib/slug'
 import { Input } from '@/components/ui/input'
@@ -16,15 +17,25 @@ import { Calendar } from "@/components/ui/calendar"
 import { cn } from "@/lib/utils"
 
 const MDEditor = dynamic(() => import('@uiw/react-md-editor'), { ssr: false })
-const remarkBreaks = (await import('remark-breaks')).default;
 
 export default function AdminPage() {
+    const [remarkPlugins, setRemarkPlugins] = useState<PluggableList>([])
     const [secret, setSecret] = useState('')
     const [title, setTitle] = useState('')
     const [blog, setBlog] = useState('')
     const [selectedDate, setSelectedDate] = useState<Date>()
     const [saving, setSaving] = useState(false)
     const [open, setOpen] = useState(false)
+
+    useEffect(() => {
+        import('remark-breaks')
+            .then((mod) => {
+                setRemarkPlugins([mod.default])
+            })
+            .catch(() => {
+                setRemarkPlugins([])
+            })
+    }, [])
 
     const saveStory = async () => {
         if (!title || !blog || !selectedDate || !secret) return
@@ -58,7 +69,6 @@ export default function AdminPage() {
             toast.error('❌ Failed to save: ' + insertError.message)
         } else {
             toast.success('✅ Story saved!')
-            // Reset form
             setTitle('')
             setBlog('')
             setSelectedDate(undefined)
@@ -127,7 +137,7 @@ export default function AdminPage() {
                                 value={blog}
                                 onChange={(val) => setBlog(val || '')}
                                 previewOptions={{
-                                    remarkPlugins: [remarkBreaks],
+                                    remarkPlugins,
                                 }}
                             />
                         </div>
