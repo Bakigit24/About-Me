@@ -18,6 +18,9 @@ export const metadata: Metadata = {
         images: ["/opengraph-image"],
     },
     metadataBase: new URL("https://shx404.vercel.app"),
+    verification:{
+        google: "Ly1jp3TolN3skHvK-BLYtjogw3anzmL6___Blfk0ffc"
+    }
 };
 
 export default function RootLayout({
