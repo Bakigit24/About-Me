@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://shoxruh.vercel.app
+
+# Sitemaps
+Sitemap: https://shoxruh.vercel.app/sitemap.xml
